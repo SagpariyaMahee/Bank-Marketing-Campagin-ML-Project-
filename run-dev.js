@@ -2,7 +2,7 @@ const { spawn } = require("child_process");
 const http = require("http");
 const path = require("path");
 
-const projectRoot = path.resolve(__dirname, "..");
+const projectRoot = __dirname;
 
 function checkBackendRunning() {
   return new Promise((resolve) => {
