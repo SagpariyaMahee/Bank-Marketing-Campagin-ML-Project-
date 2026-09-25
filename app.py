@@ -216,13 +216,14 @@ def generate_insights(features: dict, prob_yes: float) -> list:
 
 
 @app.route("/", methods=["GET"])
+@app.route("/api", methods=["GET"])
 def index():
     return jsonify({
         "message": "Bank Marketing Campaign ML Backend API is Running!",
         "status": "online",
-        "frontend_url": "http://localhost:3000",
-        "health_check": "http://127.0.0.1:5000/api/health",
-        "features_endpoint": "http://127.0.0.1:5000/api/features"
+        "health_check": "/api/health",
+        "features_endpoint": "/api/features",
+        "predict_endpoint": "/api/predict"
     })
 
 
