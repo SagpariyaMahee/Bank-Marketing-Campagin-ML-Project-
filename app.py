@@ -14,13 +14,21 @@ MODEL_PATH = ROOT / "models" / "bank_marketing_pipeline.joblib"
 app = Flask(__name__)
 CORS(app)
 
-# Load trained model pipeline artifact
-if not MODEL_PATH.exists():
-    raise FileNotFoundError(
-        f"Model file not found at {MODEL_PATH}. Run export_model.py first!"
-    )
+# Load trained model pipeline artifact with automatic fallback retraining
+def load_model_data():
+    if not MODEL_PATH.exists():
+        print("Model file not found. Auto-training model pipeline...")
+        from export_model import train_and_export
+        train_and_export()
+    try:
+        return joblib.load(MODEL_PATH)
+    except Exception as err:
+        print(f"Model pickle load warning ({err}). Auto-retraining pipeline on environment...")
+        from export_model import train_and_export
+        train_and_export()
+        return joblib.load(MODEL_PATH)
 
-saved_data = joblib.load(MODEL_PATH)
+saved_data = load_model_data()
 preprocessor = saved_data["preprocessor"]
 model = saved_data["model"]
 feature_columns = saved_data["feature_columns"]
